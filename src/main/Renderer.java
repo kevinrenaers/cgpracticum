@@ -3,22 +3,15 @@ package main;
 import gui.ImagePanel;
 import gui.ProgressReporter;
 import gui.RenderFrame;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import material.Material;
+import math.Ray;
+import sampling.Sample;
+import shape.ShadeRec;
+import shape.World;
 
 import javax.imageio.ImageIO;
-
-import math.Point;
-import math.Ray;
-import math.Transformation;
-import math.Vector;
-import sampling.Sample;
-import shape.Shape;
-import shape.Sphere;
-import camera.PerspectiveCamera;
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Entry point of your renderer.
@@ -71,46 +64,26 @@ public class Renderer {
 			throw new IllegalArgumentException("the given height cannot be "
 					+ "smaller than or equal to zero!");
 
-		// initialize the camera
-		PerspectiveCamera camera = new PerspectiveCamera(width, height,
-				new Point(), new Vector(0, 0, 1), new Vector(0, 1, 0), 90);
-
 		// initialize the graphical user interface
 		ImagePanel panel = new ImagePanel(width, height);
-		RenderFrame frame = new RenderFrame("Sphere", panel);
+		RenderFrame frame = new RenderFrame("World", panel);
 
 		// initialize the progress reporter
 		ProgressReporter reporter = new ProgressReporter("Rendering", 40, width
 				* height, false);
 		reporter.addProgressListener(frame);
 		
-		// initialize the scene
-		Transformation t1 = Transformation.createTranslation(0, 0, 10);
-		Transformation t2 = Transformation.createTranslation(4, -4, 12);
-		Transformation t3 = Transformation.createTranslation(-4, -4, 12);
-		Transformation t4 = Transformation.createTranslation(4, 4, 12);
-		Transformation t5 = Transformation.createTranslation(-4, 4, 12);
-
-		List<Shape> shapes = new ArrayList<Shape>();
-		shapes.add(new Sphere(t1, 5));
-		shapes.add(new Sphere(t2, 4));
-		shapes.add(new Sphere(t3, 4));
-		shapes.add(new Sphere(t4, 4));
-		shapes.add(new Sphere(t5, 4));
+		World world = new World(width, height);
 
 		// render the scene
 		for (int x = 0; x < width; ++x) {
 			for (int y = 0; y < height; ++y) {
 				// create a ray through the center of the pixel.
-				Ray ray = camera.generateRay(new Sample(x + 0.5, y + 0.5));
+				Ray ray = world.getCamera().generateRay(new Sample(x + 0.5, y + 0.5));
+                ShadeRec shadeRec = world.trackRay(ray);
 
-				boolean hit = false;
-				for (Shape shape : shapes)
-					if (shape.intersect(ray)) {
-						hit = true;
-						break;
-					}
-				panel.set(x, y, 255, hit ? 255 : 0, 0, 0);
+                Material material = shadeRec.getMaterial();
+                panel.set(x, y, material != null ? material.shade(shadeRec).convertToColor() : world.backgroundColor.convertToColor());
 			}
 			reporter.update(height);
 		}
