@@ -63,7 +63,7 @@ public class World {
 //        Triangle triangle1 = new Triangle(t1, new Point(-10, 0, 0), new Point(5, 5, 5), new Point(10, 3, 5));
 //        triangle1.setMaterial(matteMaterial);
 //        shapes.add(triangle1);
-        TriangleMesh triangleMesh = new ObjReader("C:\\Users\\kevin\\IdeaProjects\\cgpracticum-master\\objFiles\\minicooper.obj").readFile(t1);
+        TriangleMesh triangleMesh = new ObjReader("minicooper.obj").readFile(t1);
         triangleMesh.setMaterial(matteMaterial);
         shapes.add(triangleMesh);
     }

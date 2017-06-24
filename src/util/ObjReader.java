@@ -6,10 +6,7 @@ import math.Vector;
 import shape.TriangleMesh;
 import shape.TriangleOfMesh;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,10 +24,9 @@ public class ObjReader {
 
     public TriangleMesh readFile(Transformation transformation) {
         triangleMesh = new TriangleMesh(transformation);
-        File file = new File(fileName);
         try {
-            FileReader reader = new FileReader(file);
-            BufferedReader bufferedReader = new BufferedReader(reader);
+            InputStream stream = getClass().getResourceAsStream("resources/" + fileName);
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(stream));
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 parseLine(line, transformation);
