@@ -1,10 +1,7 @@
 package shape;
 
 import material.Material;
-import math.Point;
-import math.Ray;
-import math.Transformation;
-import math.Vector;
+import math.*;
 
 public class Plane implements Shape {
 
@@ -29,7 +26,8 @@ public class Plane implements Shape {
 
         if (t > K_EPSILON) {
             shadeRec.setT(t);
-            shadeRec.setNormal(normal);
+            Matrix transposeOfInverse = this.transformation.getInverseTransformationMatrix().transpose();
+            shadeRec.setNormal(transposeOfInverse.transform(normal));
             shadeRec.setHitPoint(transformed.origin.add(transformed.direction.scale(t)));
             return true;
         }
@@ -44,5 +42,10 @@ public class Plane implements Shape {
     @Override
     public Material getMaterial() {
         return material;
+    }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return null;
     }
 }

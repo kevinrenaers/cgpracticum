@@ -25,4 +25,6 @@ public interface Shape {
 	void setMaterial(Material material);
 
 	Material getMaterial();
+
+	BoundingBox getBoundingBox();
 }

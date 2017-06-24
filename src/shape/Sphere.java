@@ -93,4 +93,9 @@ public class Sphere implements Shape {
     public Material getMaterial() {
         return material;
     }
+
+    @Override
+    public BoundingBox getBoundingBox() {
+        return null;
+    }
 }

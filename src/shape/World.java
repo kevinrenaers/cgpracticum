@@ -11,6 +11,7 @@ import math.Point;
 import math.Ray;
 import math.Transformation;
 import math.Vector;
+import util.ObjReader;
 import util.RGBColor;
 
 import java.awt.*;
@@ -28,17 +29,19 @@ public class World {
 
     public World(int width, int height) {
         camera = new PerspectiveCamera(width, height,
-                new Point(), new Vector(0, 0, 1), new Vector(0, 1, 0), 90);
+                new Point(0,0,-150), new Vector(0, 0, 1), new Vector(0, 1, 0), 90);
 
 
-        PointLight pl = new PointLight(new Point(0, 0, -1));
+        PointLight pl = new PointLight(new Point(0, 0, -155));
         lights.add(pl);
 
         this.ambientLight = new AmbientLight();
 
 
         // initialize the scene
-        Transformation t1 = Transformation.createTranslation(0, 0, 10);
+        Transformation t1 = Transformation.createTranslation(0, 0, 14);
+        t1 = t1.append(Transformation.createRotationX(250));
+        t1 = t1.append(Transformation.createRotationZ(210));
         Transformation t2 = Transformation.createTranslation(4, -4, 12);
         Transformation t3 = Transformation.createTranslation(-4, -4, 12);
         Transformation t4 = Transformation.createTranslation(4, 4, 12);
@@ -57,9 +60,12 @@ public class World {
 //        shapes.add(new Sphere(t4, 4));
 //        shapes.add(new Sphere(t5, 4));
 //        shapes.add(new Plane(t1, new Point(1, 5, -100), new Vector(1, 1, 1)));
-        Triangle triangle1 = new Triangle(t1, new Point(-10, 0, 0), new Point(5, 5, 5), new Point(10, 3, 5));
-        triangle1.setMaterial(matteMaterial);
-        shapes.add(triangle1);
+//        Triangle triangle1 = new Triangle(t1, new Point(-10, 0, 0), new Point(5, 5, 5), new Point(10, 3, 5));
+//        triangle1.setMaterial(matteMaterial);
+//        shapes.add(triangle1);
+        TriangleMesh triangleMesh = new ObjReader("C:\\Users\\kevin\\IdeaProjects\\cgpracticum-master\\objFiles\\minicooper.obj").readFile(t1);
+        triangleMesh.setMaterial(matteMaterial);
+        shapes.add(triangleMesh);
     }
 
     public ShadeRec trackRay(Ray ray) {

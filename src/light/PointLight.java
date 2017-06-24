@@ -23,7 +23,7 @@ public class PointLight implements Light {
     }
 
     @Override
-    public RGBColor getColor() {
+    public RGBColor getRadiance() {
         return color.scale(ls);
     }
 

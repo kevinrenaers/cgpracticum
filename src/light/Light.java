@@ -8,7 +8,7 @@ public interface Light {
 
     Vector getDirection(ShadeRec shadeRec);
 
-    RGBColor getColor();
+    RGBColor getRadiance();
 
     void setLs(double ls);
 }

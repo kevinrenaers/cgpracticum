@@ -20,7 +20,7 @@ public class AmbientLight implements Light {
     }
 
     @Override
-    public RGBColor getColor() {
+    public RGBColor getRadiance() {
         return color.scale(ls);
     }
 

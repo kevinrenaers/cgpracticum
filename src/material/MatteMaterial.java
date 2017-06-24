@@ -33,14 +33,14 @@ public class MatteMaterial implements Material {
 
     @Override
     public RGBColor shade(ShadeRec shadeRec) {
-        RGBColor L = ambientBRDF.getReflectance(shadeRec).multiply(shadeRec.getWorld().getAmbientLight().getColor());
+        RGBColor L = ambientBRDF.getReflectance(shadeRec).multiply(shadeRec.getWorld().getAmbientLight().getRadiance());
         List<Light> lights = shadeRec.getWorld().getLights();
         for (Light light : lights) {
             Vector wi = light.getDirection(shadeRec);
             double nDotWi = shadeRec.getNormal().dot(wi);
 
             if (nDotWi > 0.0) {
-                L = L.add(diffuseBRDF.getF(shadeRec).multiply(light.getColor().scale(nDotWi)));
+                L = L.add(diffuseBRDF.getF(shadeRec).multiply(light.getRadiance().scale(nDotWi)));
             }
         }
         return L;

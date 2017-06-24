@@ -3,21 +3,25 @@ package shape;
 import material.Material;
 import math.*;
 
-public class Triangle implements Shape {
+public class TriangleOfMesh implements Shape {
 
     private final Transformation transformation;
     private final Point p0;
     private final Point p1;
     private final Point p2;
-    private final Vector normal;
+    private final Vector normal0;
+    private final Vector normal1;
+    private final Vector normal2;
     private Material material;
 
-    public Triangle(Transformation transformation, Point p0, Point p1, Point p2) {
+    public TriangleOfMesh(Transformation transformation,Point[] points, Vector[] normals) {
         this.transformation = transformation;
-        this.p0 = p0;
-        this.p1 = p1;
-        this.p2 = p2;
-        normal = (p1.subtract(p0)).cross(p2.subtract(p0)).normalize();
+        this.p0 = points[0];
+        this.p1 = points[1];
+        this.p2 = points[2];
+        this.normal0 = normals[0];
+        this.normal1 = normals[1];
+        this.normal2 = normals[2];
     }
 
     @Override
@@ -28,15 +32,15 @@ public class Triangle implements Shape {
 
         double a = p0.x - p1.x;
         double b = p0.x - p2.x;
-        double c = ray.direction.x;
+        double c = transformed.direction.x;
         double d = p0.x - o.x;
         double e = p0.y - p1.y;
         double f = p0.y - p2.y;
-        double g = ray.direction.y;
+        double g = transformed.direction.y;
         double h = p0.y - o.y;
         double i = p0.z - p1.z;
         double j = p0.z - p2.z;
-        double k = ray.direction.z;
+        double k = transformed.direction.z;
         double l = p0.z - o.z;
 
         double m = f * k - g * j;
@@ -45,7 +49,7 @@ public class Triangle implements Shape {
         double q = g * i - e * k;
         double s = e * j - f * i;
 
-        double invDenom = 1 / (a * m + b * q + c * s);
+        double invDenom = 1.0 / (a * m + b * q + c * s);
 
         double el = d * m - b * n - c * p;
         double beta = el * invDenom;
@@ -75,10 +79,17 @@ public class Triangle implements Shape {
 
         shadeRec.setT(t);
         Matrix transposeOfInverse = this.transformation.getInverseTransformationMatrix().transpose();
-        shadeRec.setNormal(transposeOfInverse.transform(normal));
+        shadeRec.setNormal(transposeOfInverse.transform(interpolatePhong(beta, gamma)));
         shadeRec.setHitPoint(transformed.origin.add(transformed.direction.scale(t)));
 
         return true;
+    }
+
+    private Vector interpolatePhong(double beta, double gamma) {
+        Vector normal = normal0.scale((1 - beta - gamma))
+                .add(normal1.scale(beta))
+                .add(normal2.scale(gamma));
+        return normal.normalize();
     }
 
     @Override
@@ -93,6 +104,15 @@ public class Triangle implements Shape {
 
     @Override
     public BoundingBox getBoundingBox() {
-        return null;
+        double delta = 0.000001;
+
+        double px0 = Math.min(Math.min(p0.x, p1.x), p2.x) - delta;
+        double px1 = Math.max(Math.max(p0.x, p1.x), p2.x) + delta;
+        double py0 = Math.min(Math.min(p0.y, p1.y), p2.y) - delta;
+        double py1 = Math.max(Math.max(p0.y, p1.y), p2.y) + delta;
+        double pz0 = Math.min(Math.min(p0.z, p1.z), p2.z) - delta;
+        double pz1 = Math.max(Math.max(p0.z, p1.z), p2.z) + delta;
+
+        return new BoundingBox(transformation, new Point(px0, py0, pz0), new Point(px1, py1, pz1));
     }
 }
