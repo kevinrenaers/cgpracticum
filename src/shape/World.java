@@ -11,6 +11,7 @@ import math.Point;
 import math.Ray;
 import math.Transformation;
 import math.Vector;
+import util.BoxSplitter;
 import util.ObjReader;
 import util.RGBColor;
 
@@ -23,7 +24,7 @@ public class World {
     private Camera camera;
     private final List<Shape> shapes = new ArrayList<>();
     private final List<Light> lights = new ArrayList<>();
-    public Light ambientLight;
+    private Light ambientLight;
 
     public final RGBColor backgroundColor = RGBColor.convertToRGBColor(Color.black);
 
@@ -63,9 +64,12 @@ public class World {
 //        Triangle triangle1 = new Triangle(t1, new Point(-10, 0, 0), new Point(5, 5, 5), new Point(10, 3, 5));
 //        triangle1.setMaterial(matteMaterial);
 //        shapes.add(triangle1);
-        TriangleMesh triangleMesh = new ObjReader("minicooper.obj").readFile(t1);
-        triangleMesh.setMaterial(matteMaterial);
-        shapes.add(triangleMesh);
+        List<Shape> triangleMeshes = BoxSplitter.splitShape(t1, new ObjReader("minicooper.obj").readFile(t1));
+        for (Shape triangleMesh : triangleMeshes) {
+//        TriangleMesh triangleMesh = new ObjReader("minicooper.obj").readFile(t1);
+            triangleMesh.setMaterial(matteMaterial);
+            shapes.add(triangleMesh);
+        }
     }
 
     public ShadeRec trackRay(Ray ray) {

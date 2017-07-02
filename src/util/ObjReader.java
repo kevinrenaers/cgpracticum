@@ -34,7 +34,6 @@ public class ObjReader {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        triangleMesh.calcBoundingBox();
         return triangleMesh;
     }
 
@@ -79,7 +78,6 @@ public class ObjReader {
                 createTriangle(temp, transformation);
             }
         }
-        createTriangle(vals, transformation);
     }
 
     private void createTriangle(String[] vals, Transformation transformation) {
@@ -99,6 +97,6 @@ public class ObjReader {
             }
         }
         TriangleOfMesh triangle = new TriangleOfMesh(transformation, trianglePoints, triangleNormals);
-        triangleMesh.addTriangle(triangle);
+        triangleMesh.addShape(triangle);
     }
 }

@@ -107,4 +107,28 @@ public class BoundingBox implements Shape {
     Point getP1() {
         return p1;
     }
+
+    public Point getMiddle() {
+        double x;
+        if (p0.x < p1.x) {
+            x = (int) (p0.x + (p1.x - p0.x) / 2);
+        } else {
+            x = (int) (p1.x + (p0.x - p1.x) / 2);
+        }
+
+        double y;
+        if (p0.y < p1.y) {
+            y = (int) (p0.y + (p1.y - p0.y) / 2);
+        } else {
+            y = (int) (p1.y + (p0.y - p1.y) / 2);
+        }
+
+        double z;
+        if (p0.z < p1.z) {
+            z = (int) (p0.z + (p1.z - p0.z) / 2);
+        } else {
+            z = (int) (p1.z + (p0.z - p1.z) / 2);
+        }
+        return new Point(x, y, z);
+    }
 }
