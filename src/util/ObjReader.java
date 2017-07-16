@@ -97,6 +97,6 @@ public class ObjReader {
             }
         }
         TriangleOfMesh triangle = new TriangleOfMesh(transformation, trianglePoints, triangleNormals);
-        triangleMesh.addShape(triangle);
+        triangleMesh.addTriangle(triangle);
     }
 }
